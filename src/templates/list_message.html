@@ -1,0 +1,58 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Lists</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+	<div class="container mt-3">
+		{% if list_remaining_limit %}
+			{{ list_remaining_limit }} Remaining List request
+			<br>
+		{% endif %}
+		{% if not message_status %}
+			<h1>Write correct slug otherwise message will not go</h1>
+		{% endif %}
+
+		{% for user_list in user_lists %}
+			Slug{{ forloop.counter}} : {{ user_list }}
+		{% endfor %}
+
+		{% if sent_names %}
+		 	<h3>Messages are sent successfully to the following users</h3>		
+		{% endif %} 	
+
+		{% for sent_name in sent_names %}
+			{{ sent_name }},
+		{% endfor %}
+
+		<hr>
+
+		{% if unsent_names %}
+		 	<h3>Messages are sent unsuccessfully to the following users</h3>		
+		{% endif %} 	
+
+		{% for unsent_name in unsent_names %}
+			{{ unsent_name }}
+		{% endfor %}
+
+		<br>
+
+		{% if message_status %}
+			<a href="/">For sending message again click this</a>
+		{% endif %}
+
+		{% if not message_status %}
+			<form action="" method="post">
+				{% csrf_token %}
+				<h2>Enter the slug from above to send messages to the users of that list : </h2>
+				<p>Enter Slug : <input type="text" class="form-control" name="list-slug"></p>
+				<small>Make sure the slug is correct other message will not be successful</small>
+				<p>Enter Message : <textarea name="message" class="form-control" id="" cols="30" rows="10"></textarea></p>
+				<button class="btn btn-dark" type="submit">Submit</button>
+			</form>
+		{% endif %}
+	</div>
+</body>
+</html>
