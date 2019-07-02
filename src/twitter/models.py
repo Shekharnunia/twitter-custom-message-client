@@ -13,6 +13,7 @@ class TwitterAuth(models.Model):
 
 class SearchKeyWords(models.Model):
     keyword = models.CharField(max_length=50)
+    since_id = models.CharField(max_length=30, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = "SearchKeyWords"
