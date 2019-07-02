@@ -31,27 +31,21 @@ class Command(BaseCommand):
             keywords = SearchKeyWords.objects.all()
             if keywords: 
                 for j in keywords:
-                    today = datetime.datetime.today()
-                    try:
-                        last_keyword_url = StatusUrls.objects.filter(keyword=j).order_by('-created_at').first()
-                        print(last_keyword_url)
-                    except:
-                        since_id = ''
-                    else:
-                        if last_keyword_url is not None:
-                            since_id = last_keyword_url.url.split('status/')[-1]
-                        else:
-                            since_id = ''
-                    c = tweepy.Cursor(api.search, q=j.keyword, count=200, result_type='recent')
+                    print(j)
+                    c = tweepy.Cursor(api.search, q=j.keyword, since_id=j.since_id, count=200)
+
+                    globals()[f'lst{j.keyword}'] = []
                     for i in c.items():
+                        globals()[f'lst{j}'].append(i.id)
                         url = f"https://twitter.com/{i.user.screen_name}/status/{i.id}"
                         created_at = i.created_at
                         tweet = i.text
                         try:
                             StatusUrls.objects.create(url=url, tweet=tweet, created_at=created_at, keyword=j).save()
-                            print(url)
                         except:
                             pass
-                        # print(url)
+                    if len(globals()[f'lst{j}']) > 0:
+                        j.since_id = str(globals()[f'lst{j}'][0])
+                        j.save()
             print('going for sleeping')
             time.sleep(10)
