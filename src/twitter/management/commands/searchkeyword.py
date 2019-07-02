@@ -1,3 +1,4 @@
+import sys
 import time
 import datetime
 
@@ -6,7 +7,10 @@ from django.core.management.base import BaseCommand
 
 from twitter.models import TwitterAuth, SearchKeyWords, StatusUrls
 
-auth = TwitterAuth.objects.first()
+try:
+    auth = TwitterAuth.objects.first()
+except:
+    sys.exit()
 
 consumer_key = auth.consumer_key
 consumer_secret = auth.consumer_secret
@@ -25,33 +29,29 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
             keywords = SearchKeyWords.objects.all()
-            print(keywords)
             if keywords: 
                 for j in keywords:
                     today = datetime.datetime.today()
-                    c = tweepy.Cursor(api.search, q=j.keyword, until=f'{today.year}-{today.month}-{today.day}', count=200, result_type='recent')
+                    try:
+                        last_keyword_url = StatusUrls.objects.filter(keyword=j).order_by('-created_at').first()
+                        print(last_keyword_url)
+                    except:
+                        since_id = ''
+                    else:
+                        if last_keyword_url is not None:
+                            since_id = last_keyword_url.url.split('status/')[-1]
+                        else:
+                            since_id = ''
+                    c = tweepy.Cursor(api.search, q=j.keyword, count=200, result_type='recent')
                     for i in c.items():
                         url = f"https://twitter.com/{i.user.screen_name}/status/{i.id}"
                         created_at = i.created_at
                         tweet = i.text
-                        StatusUrls.objects.create(url=url, tweet=tweet, created_at=created_at, keyword=j).save()
-                        print(url)
+                        try:
+                            StatusUrls.objects.create(url=url, tweet=tweet, created_at=created_at, keyword=j).save()
+                            print(url)
+                        except:
+                            pass
+                        # print(url)
             print('going for sleeping')
-            time.sleep(120)
-
-
-# c = tweepy.Cursor(api.search, q='physician burnout', until='2019-07-02', count=200, result_type='recent')
-
-
-
-# a = api.rate_limit_status()
-# a
-# a['resources']['search']
-
-# j = []
-# c = tweepy.Cursor(api.search, q="physician burnout", until='2019-06-28', since_id = '1144374824736907269')
-# for i in c.items():
-#   print(f"https://twitter.com/{i.user.screen_name}/status/{i.id}")
-#   j.append(i)
-
-# j[0].id
+            time.sleep(10)
