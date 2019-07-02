@@ -11,20 +11,6 @@ class TwitterAuth(models.Model):
         verbose_name_plural = "TwitterAuth"
             
 
-
-class FollowerDetail(models.Model):
-    last_time_follower_count = models.PositiveIntegerField(default=0)
-    last_ten_followers = models.CharField(max_length=250)
-
-    class Meta:
-        verbose_name = "FollowerDetail"
-        verbose_name_plural = "FollowerDetails"
-
-    def __str__(self):
-        return str(self.last_time_follower_count)
-
-
-
 class SearchKeyWords(models.Model):
     keyword = models.CharField(max_length=50)
 
@@ -53,7 +39,13 @@ class StatusUrls(models.Model):
     def __str__(self):
         return self.url
 
-# class Followers(models.Model):
-#     screen_name = models.CharField(max_length=20)
-#     user_id = models.PositiveIntegerField()
+class Followers(models.Model):
+    screen_name = models.CharField(max_length=20, unique=True)
+    user_id = models.PositiveIntegerField()
 
+    class Meta:
+        verbose_name = "Follower"
+        verbose_name_plural = "Followers"
+
+    def __str__(self):
+        return self.screen_name
