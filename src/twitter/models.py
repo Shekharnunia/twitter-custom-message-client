@@ -40,7 +40,7 @@ class SearchKeyWords(models.Model):
 class StatusUrls(models.Model):
     url = models.CharField(max_length=250, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    created_at = models.CharField(max_length=30)
+    created_at = models.DateTimeField()
     sent = models.BooleanField(default=False)
     tweet = models.CharField(max_length=350)
     keyword = models.ForeignKey(SearchKeyWords, blank=True, null=True, on_delete=models.SET_NULL)
