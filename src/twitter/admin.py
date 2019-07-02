@@ -1,23 +1,34 @@
+from django.contrib import admin
 from django.utils.html import mark_safe
 
-from django.contrib import admin
+import decimal, csv
+from django.http import HttpResponse
+
 from .models import TwitterAuth, SearchKeyWords, StatusUrls
 
-admin.site.register(TwitterAuth)
 
-admin.site.register(SearchKeyWords)
+def export_status(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="status.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['URl', 'Created Date', 'Tweet', 'Keyword'])
+    status = queryset.values_list('url', 'created_at', 'tweet', 'keyword__keyword')
+    for stat in status:
+        writer.writerow(stat)
+    return response
+export_status.short_description = 'Export to csv'
 
 
 class StatusUrlsAdmin(admin.ModelAdmin):
     list_display = ("keyword", 'tweet', 'created_at')
-    list_filter = ("keyword",)
-    search_fields = ("tweet",)
+    list_filter = ("keyword", 'created_at')
+    search_fields = ("tweet", 'url')
     readonly_fields = ("tweet", 'url', 'created_at', 'keyword', 'url_link',)
     exclude = ('sent',)
+    ordering = ('-id',)
+    actions = [export_status, ]
 
-    # exclude = ('browser', 'screenshot')
-    # ordering = ("-created",)
-    # date_hierarchy = 'created'
+
     class Meta:
         model = StatusUrls
 
@@ -28,3 +39,16 @@ class StatusUrlsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(StatusUrls, StatusUrlsAdmin)
+
+
+
+
+
+
+
+
+
+
+admin.site.register(TwitterAuth)
+
+admin.site.register(SearchKeyWords)
