@@ -31,14 +31,15 @@ class SearchKeyWords(models.Model):
 class StatusUrls(models.Model):
     url = models.CharField(max_length=250, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    created_at = models.CharField(max_length=30)
     sent = models.BooleanField(default=False)
-    tweet = models.CharField(max_length=240)
-    keyword = models.ForeignKey(SearchKeyWords, blank=True, null=True)
+    tweet = models.CharField(max_length=350)
+    keyword = models.ForeignKey(SearchKeyWords, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.url
 
-class Followers(models.Model):
-    screen_name = models.CharField(max_length=20)
-    user_id = models.PositiveIntegerField()
+# class Followers(models.Model):
+#     screen_name = models.CharField(max_length=20)
+#     user_id = models.PositiveIntegerField()
 

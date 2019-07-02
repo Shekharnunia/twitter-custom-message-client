@@ -27,16 +27,20 @@ class Command(BaseCommand):
             keywords = SearchKeyWords.objects.all()
             print(keywords)
             if keywords: 
-                for i in keywords:
+                for j in keywords:
                     today = datetime.datetime.today()
-                    c = tweepy.Cursor(api.search, q=i.keyword, until=f'{today.year}-{today.month}-{today.day}', count=500, result_type='recent')
+                    c = tweepy.Cursor(api.search, q=j.keyword, until=f'{today.year}-{today.month}-{today.day}', count=200, result_type='recent')
                     for i in c.items():
                         url = f"https://twitter.com/{i.user.screen_name}/status/{i.id}"
-                        StatusUrls.objects.create(url=url).save()
+                        created_at = i.created_at
+                        tweet = i.text
+                        StatusUrls.objects.create(url=url, tweet=tweet, created_at=created_at, keyword=j).save()
                         print(url)
             print('going for sleeping')
             time.sleep(120)
 
+
+# c = tweepy.Cursor(api.search, q='physician burnout', until='2019-07-02', count=200, result_type='recent')
 
 
 
