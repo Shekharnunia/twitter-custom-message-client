@@ -5,7 +5,11 @@ class TwitterAuth(models.Model):
     consumer_secret = models.CharField(max_length=50)
     access_token = models.CharField(max_length=50)
     access_token_secret = models.CharField(max_length=50)
-
+    
+    class Meta:
+        verbose_name = "TwitterAuth"
+        verbose_name_plural = "TwitterAuth"
+            
 
 
 class FollowerDetail(models.Model):
@@ -24,6 +28,11 @@ class FollowerDetail(models.Model):
 class SearchKeyWords(models.Model):
     keyword = models.CharField(max_length=50)
 
+    class Meta:
+        verbose_name = "SearchKeyWords"
+        verbose_name_plural = "SearchKeyWords"
+            
+
     def __str__(self):
         return self.keyword
 
@@ -35,6 +44,11 @@ class StatusUrls(models.Model):
     sent = models.BooleanField(default=False)
     tweet = models.CharField(max_length=350)
     keyword = models.ForeignKey(SearchKeyWords, blank=True, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name = "StatusUrls"
+        verbose_name_plural = "StatusUrls"
+
 
     def __str__(self):
         return self.url
