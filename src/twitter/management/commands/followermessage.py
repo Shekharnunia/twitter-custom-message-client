@@ -2,7 +2,7 @@ import time
 import tweepy
 from django.core.management.base import BaseCommand
 
-from twitter.models import TwitterAuth, FollowerDetail
+from twitter.models import TwitterAuth, FollowerDetail, Followers
 
 auth = TwitterAuth.objects.first()
 
@@ -17,50 +17,52 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True)
 
 
-# put followers names in database and get all followers detail from api, 
-# then compare them with database that who is new and who is not
-
 class Command(BaseCommand):
     help = 'Runs my special command'
 
     def handle(self, *args, **options):
         while True:
             me = api.get_user(screen_name='shekharnunia')
-            c = tweepy.Cursor(api.followers, screen_name=f"{me.screen_name}")
-
-            follower_detail_for_last_time = FollowerDetail.objects.last()
-
-            followers_count = follower_detail_for_last_time.last_time_follower_count
-            last_ten_followers = follower_detail_for_last_time.last_ten_followers
-
-            list_of_last_ten_follower = last_ten_followers.split(',')
             
-            limit = me.followers_count - followers_count
-            if limit <= 0:
-                limit = 20
-            for i in c.items(limit):
-                new_list_of_follower.append(i.screen_name)
-                print(f"{i.screen_name}")
+            followers = me.followers()
+            followers_user_id = [(i.id,i.screen_name) for i in followers]
+
+            database_followers = Followers.objects.all()
+            if len(database_followers) == 0:
+                for i in followers_user_id:
+                    try:
+                        Followers.objects.create(screen_name = i[1], user_id = i[0]).save()
+                    except:
+                        pass
+            else:
+                database_followers_user_id = [i.user_id for i in database_followers]
+                new_followers = []
+                for i,element in enumerate([x[0] for x in followers_user_id]):
+                    if element not in database_followers_user_id:
+                        new_followers.append(followers_user_id[i])
+
+                if len(new_followers) != 0:
+                    for i in new_followers:
+                        self.send_message(i[0], 'hey how are you')
+                        try:
+                            Followers.objects.create(screen_name = i[1], user_id = i[0]).save()
+                        except:
+                            pass
             time.sleep(30)
 
 
-
-
-
-# def getFollower(profile):
-#     i = 0
-#     l = []
-#     printColour("\n[*] ", BLUE)
-#     print "Follower list:\n"
-#     for user in tweepy.Cursor(api.followers, screen_name=profile, count=200).items():
-#         try:
-#             l.append(user.screen_name)
-#             i = i + 1
-#         except:
-#             print "[-] Timeout, sleeping for 15 minutes..."
-#             time.sleep(15*60)
-#     for user in l:
-#         printColour("[+] @" + user, GREEN)
-#         print(" (https://www.twitter.com/" + user + ")\n")
-#     printColour("\n[*] ", CYAN)
-#     print "Total follower: " + str(len(l)-1) + "\n" 
+    def send_message(self, id,message):
+        event = {
+          "event": {
+            "type": "message_create",
+            "message_create": {
+              "target": {
+                "recipient_id": f'{id}'
+              },
+              "message_data": {
+                "text": message
+              }
+            }
+          }
+        }
+        api.send_direct_message_new(event)
