@@ -2,7 +2,7 @@ import time
 import tweepy
 from django.core.management.base import BaseCommand
 
-from twitter.models import TwitterAuth, FollowerDetail, Followers
+from twitter.models import TwitterAuth, Followers
 
 auth = TwitterAuth.objects.first()
 
