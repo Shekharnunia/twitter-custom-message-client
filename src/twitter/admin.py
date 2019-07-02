@@ -4,7 +4,7 @@ from django.utils.html import mark_safe
 import decimal, csv
 from django.http import HttpResponse
 
-from .models import TwitterAuth, SearchKeyWords, StatusUrls
+from .models import TwitterAuth, SearchKeyWords, StatusUrls, Followers
 
 
 def export_status(modeladmin, request, queryset):
@@ -40,15 +40,8 @@ class StatusUrlsAdmin(admin.ModelAdmin):
 
 admin.site.register(StatusUrls, StatusUrlsAdmin)
 
-
-
-
-
-
-
-
-
-
 admin.site.register(TwitterAuth)
 
 admin.site.register(SearchKeyWords)
+
+admin.site.register(Followers)
