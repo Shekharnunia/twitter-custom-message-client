@@ -3,6 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from twitter import views
+admin.site.site_header = 'Twitter Status Admin'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
