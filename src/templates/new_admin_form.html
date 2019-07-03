@@ -1,0 +1,11 @@
+{% extends 'admin/change_form.html' %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <div class="submit-row">
+            <input type="submit" value="Retweet" name="_retweet">
+    </div>
+    <div class="submit-row">
+            <input type="submit" value="Favourite" name="_favourite">
+    </div>
+{% endblock %}
