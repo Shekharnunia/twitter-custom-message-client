@@ -1,10 +1,13 @@
-import time
 import tweepy
 from django.core.management.base import BaseCommand
 
 from twitter.models import TwitterAuth, Followers
 
-auth = TwitterAuth.objects.first()
+try:
+    auth = TwitterAuth.objects.first()
+except:
+    sys.exit()
+
 
 consumer_key = auth.consumer_key
 consumer_secret = auth.consumer_secret
@@ -48,7 +51,6 @@ class Command(BaseCommand):
                             Followers.objects.create(screen_name = i[1], user_id = i[0]).save()
                         except:
                             pass
-            time.sleep(30)
 
 
     def send_message(self, id,message):

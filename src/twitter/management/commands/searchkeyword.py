@@ -1,5 +1,4 @@
 import sys
-import time
 import datetime
 
 import tweepy
@@ -42,10 +41,9 @@ class Command(BaseCommand):
                         tweet = i.text
                         try:
                             StatusUrls.objects.create(url=url, tweet=tweet, created_at=created_at, keyword=j).save()
+                            print(url)
                         except:
                             pass
                     if len(globals()[f'lst{j}']) > 0:
                         j.since_id = str(globals()[f'lst{j}'][0])
                         j.save()
-            print('going for sleeping')
-            time.sleep(10)
