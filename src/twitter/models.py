@@ -31,6 +31,8 @@ class StatusUrls(models.Model):
     sent = models.BooleanField(default=False)
     tweet = models.CharField(max_length=350)
     keyword = models.ForeignKey(SearchKeyWords, blank=True, null=True, on_delete=models.SET_NULL)
+    retweet = models.BooleanField(default=False, help_text='If this field is green means that you already have retweeted ')
+    favorites = models.BooleanField(default=False, help_text='If this field is green means that you already have marked it as your favorites ')
 
     class Meta:
         verbose_name = "StatusUrls"
@@ -39,6 +41,7 @@ class StatusUrls(models.Model):
 
     def __str__(self):
         return self.url
+
 
 class Followers(models.Model):
     screen_name = models.CharField(max_length=20, unique=True)
