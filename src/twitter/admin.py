@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.html import mark_safe
 
-from .models import TwitterAuth, SearchKeyWords, StatusUrls, Followers
+from .models import TwitterAuth, SearchKeyWords, StatusUrls
 
 import tweepy
 
@@ -120,5 +120,3 @@ admin.site.register(TwitterAuth)
 @admin.register(SearchKeyWords)
 class SearchKeyWordAdmin(admin.ModelAdmin):
     exclude = ('since_id',)
-
-admin.site.register(Followers)
