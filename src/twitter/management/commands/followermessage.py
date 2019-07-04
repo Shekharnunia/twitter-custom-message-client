@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         while True:
-            me = api.get_user(screen_name='shekharnunia')
+            me = api.me()
             
             followers = me.followers()
             followers_user_id = [(i.id,i.screen_name) for i in followers]
