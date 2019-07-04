@@ -22,13 +22,14 @@ export_status.short_description = 'Export to csv'
 
 
 class StatusUrlsAdmin(admin.ModelAdmin):
-    list_display = ("keyword", 'tweet', 'created_at')
+    list_display = ('username', "keyword", 'tweet', 'created_at')
     list_filter = ("keyword", 'created_at')
     search_fields = ("tweet", 'url')
-    readonly_fields = ("tweet", 'url', 'created_at', 'keyword', 'url_link', 'retweet', 'favorites')
+    readonly_fields = ('username', "tweet", 'url', 'created_at', 'keyword', 'url_link', 'retweet', 'favorites')
     exclude = ('sent',)
     ordering = ('-id',)
     actions = [export_status, ]
+    actions_on_top = True
     change_form_template = "new_admin_form.html"
 
 
@@ -98,6 +99,18 @@ class StatusUrlsAdmin(admin.ModelAdmin):
         return mark_safe('<a href="%s">Click this to go to the tweet page</a>' % (statusurls.url))
     url_link.short_description = 'Tweet Url'
     url_link.allow_tags = True
+
+    def has_add_permission(self, request):
+        return False
+
+    def username(self, statusurls):
+        a = statusurls.url.split('/')
+        if len(a) == 6:
+        	return a[3]
+        else:
+        	return ''
+    username.short_description = 'Username'
+    username.allow_tags = True
 
 
 admin.site.register(StatusUrls, StatusUrlsAdmin)
