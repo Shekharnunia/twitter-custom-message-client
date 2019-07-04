@@ -125,3 +125,5 @@ dmypy.json
 list-message.py
 tweepy
 details.txt
+
+static_root
