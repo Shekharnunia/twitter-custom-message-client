@@ -1,6 +1,6 @@
 certifi==2019.6.16
 chardet==3.0.4
-Django==2.2.10
+Django==2.2.22
 idna==2.8
 oauthlib==3.0.1
 PySocks==1.7.0
